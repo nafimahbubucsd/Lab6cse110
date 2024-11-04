@@ -4,21 +4,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { createExpense } from "../../utils/expense-utils";
 
 const AddExpenseForm = () => {
-  // Consume AppContext
   const { expenses, setExpenses } = useContext(AppContext);
   
-  // State for form inputs
   const [description, setDescription] = useState<string>('');
   const [cost, setCost] = useState<string>('');
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Validate cost is a number
     const costNumber = parseFloat(cost);
     if (isNaN(costNumber)) return;
 
-    // Create new expense object
     const newExpense = {
       id: uuidv4(),
       description: description,
@@ -26,13 +22,11 @@ const AddExpenseForm = () => {
     };
 
     try {
-      // First create the expense in the backend
       await createExpense(newExpense);
       
-      // Then update the context
-      setExpenses([...expenses, newExpense]);
+      // Ensure expenses is an array before setting new state
+      setExpenses([...(expenses || []), newExpense]);
 
-      // Reset form
       setDescription('');
       setCost('');
     } catch (error) {

@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Remaining = () => {
-  const { expenses, budget } = useContext(AppContext);
+  const { expenses = [], budget } = useContext(AppContext); // Default expenses to an empty array
   const [alertVisible, setAlertVisible] = useState(false);
 
-  // Calculate total expenses
+  // Calculate total expenses with a fallback for empty expenses
   const totalExpenses = expenses.reduce((total, item) => {
-    return total + item.cost;
+    return total + (item.cost || 0); // Ensure item.cost is a number
   }, 0);
 
   // Calculate remaining budget

@@ -2,10 +2,10 @@ import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 
 const ExpenseTotal = () => {
-  const expenses = useContext(AppContext);
+  const { expenses = [] } = useContext(AppContext); // Default expenses to an empty array
 
-  const totalExpenses = expenses.expenses.reduce((total, item) => {
-    return (total = total + item.cost);
+  const totalExpenses = expenses.reduce((total, item) => {
+    return total + (item.cost || 0); // Ensure item.cost is a number
   }, 0);
 
   return (
