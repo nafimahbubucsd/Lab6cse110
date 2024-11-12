@@ -8,17 +8,18 @@ const ExpenseList = () => {
   const { expenses, setExpenses } = useContext(AppContext);
 
   useEffect(() => {
-    loadExpenses();
-  }, []);
+    const loadExpenses = async () => {
+      try {
+        const expenseList = await fetchExpenses();
+        console.log("Fetched expenses:", expenseList); // Debugging log
+        setExpenses(expenseList);
+      } catch (error: any) {
+        console.error("Error loading expenses:", error.message);
+      }
+    };
 
-  const loadExpenses = async () => {
-    try {
-      const expenseList = await fetchExpenses();
-      setExpenses(expenseList);
-    } catch (err: any) {
-      console.log(err.message);
-    }
-  };
+    loadExpenses();
+  }, [setExpenses]);
 
   return (
     <ul className="list-group">

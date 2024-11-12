@@ -8,12 +8,16 @@ const AddExpenseForm = () => {
   
   const [description, setDescription] = useState<string>('');
   const [cost, setCost] = useState<string>('');
+  const [message, setMessage] = useState<string | null>(null); // Message for user feedback
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const costNumber = parseFloat(cost);
-    if (isNaN(costNumber)) return;
+    if (isNaN(costNumber)) {
+      setMessage("Please enter a valid cost.");
+      return;
+    }
 
     const newExpense = {
       id: uuidv4(),
@@ -22,15 +26,18 @@ const AddExpenseForm = () => {
     };
 
     try {
-      await createExpense(newExpense);
-      
-      // Ensure expenses is an array before setting new state
+      await createExpense(newExpense); // Calls the updated createExpense function
+
+      // Update expenses in context
       setExpenses([...(expenses || []), newExpense]);
 
+      // Clear form fields and provide success feedback
       setDescription('');
       setCost('');
+      setMessage("Expense added successfully!");
     } catch (error) {
       console.error('Failed to create expense:', error);
+      setMessage("Failed to add expense. Please try again.");
     }
   };
 
@@ -65,6 +72,7 @@ const AddExpenseForm = () => {
           </button>
         </div>
       </div>
+      {message && <p className="mt-3">{message}</p>}
     </form>
   );
 };
