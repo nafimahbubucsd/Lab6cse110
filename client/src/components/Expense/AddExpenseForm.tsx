@@ -4,21 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { createExpense } from "../../utils/expense-utils";
 
 const AddExpenseForm = () => {
-  // Consume AppContext
   const { expenses, setExpenses } = useContext(AppContext);
   
-  // State for form inputs
   const [description, setDescription] = useState<string>('');
   const [cost, setCost] = useState<string>('');
+  const [message, setMessage] = useState<string | null>(null); // Message for user feedback
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Validate cost is a number
     const costNumber = parseFloat(cost);
-    if (isNaN(costNumber)) return;
+    if (isNaN(costNumber)) {
+      setMessage("Please enter a valid cost.");
+      return;
+    }
 
-    // Create new expense object
     const newExpense = {
       id: uuidv4(),
       description: description,
@@ -26,17 +26,18 @@ const AddExpenseForm = () => {
     };
 
     try {
-      // First create the expense in the backend
-      await createExpense(newExpense);
-      
-      // Then update the context
-      setExpenses([...expenses, newExpense]);
+      await createExpense(newExpense); // Calls the updated createExpense function
 
-      // Reset form
+      // Update expenses in context
+      setExpenses([...(expenses || []), newExpense]);
+
+      // Clear form fields and provide success feedback
       setDescription('');
       setCost('');
+      setMessage("Expense added successfully!");
     } catch (error) {
       console.error('Failed to create expense:', error);
+      setMessage("Failed to add expense. Please try again.");
     }
   };
 
@@ -71,6 +72,7 @@ const AddExpenseForm = () => {
           </button>
         </div>
       </div>
+      {message && <p className="mt-3">{message}</p>}
     </form>
   );
 };

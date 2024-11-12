@@ -1,17 +1,23 @@
-import { createContext, useState } from "react";
+import { createContext, useState, ReactNode } from "react";
 import { AppContextType, Expense } from "../types/types";
 
 // Initialize with default values
-const initialState: AppContextType = {
+const initialState: Omit<AppContextType, 'setExpenses' | 'setBudget'> = {
   expenses: [],
-  setExpenses: () => {},
   budget: 1000, // Default budget value
-  setBudget: () => {},
 };
 
-export const AppContext = createContext<AppContextType>(initialState);
+export const AppContext = createContext<AppContextType>({
+  ...initialState,
+  setExpenses: () => {},
+  setBudget: () => {},
+});
 
-export const AppProvider = (props: any) => {
+interface AppProviderProps {
+  children: ReactNode;
+}
+
+export const AppProvider = ({ children }: AppProviderProps) => {
   const [expenses, setExpenses] = useState<Expense[]>(initialState.expenses);
   const [budget, setBudget] = useState<number>(initialState.budget);
 
@@ -24,7 +30,7 @@ export const AppProvider = (props: any) => {
         setBudget,
       }}
     >
-      {props.children}
+      {children}
     </AppContext.Provider>
   );
 };

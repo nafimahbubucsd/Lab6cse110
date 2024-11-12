@@ -1,12 +1,14 @@
-export type Expense = {
-	id: string;
-	description: string;
-	cost: number;
-};
-  
-  export interface AppContextType {
-    expenses: Expense[];
-    setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
-    budget: number;
-    setBudget: React.Dispatch<React.SetStateAction<number>>;
-  }
+
+
+export interface Expense {
+  id: string;
+  description: string;
+  cost: number;
+}
+
+export interface AppContextType {
+  expenses: Expense[];
+  budget: number;
+  setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
+  setBudget: React.Dispatch<React.SetStateAction<number>>;
+}
